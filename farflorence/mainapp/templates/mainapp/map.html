@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>Accessible Map</title>
+        <link rel="stylesheet" href="https://openlayers.org/en/v3.20.1/css/ol.css" type="text/css">
+        <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+        <script
+            src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+        <script src="https://openlayers.org/en/v3.20.1/build/ol.js"></script>
+        <style>
+            a.skiplink {
+                position: absolute;
+                clip: rect(1px, 1px, 1px, 1px);
+                padding: 0;
+                border: 0;
+                height: 1px;
+                width: 1px;
+                overflow: hidden;
+            }
+
+            a.skiplink:focus {
+                clip: auto;
+                height: auto;
+                width: auto;
+                background-color: #fff;
+                padding: 0.3em;
+            }
+
+            #map:focus {
+                outline: #4A74A8 solid 0.15em;
+            }
+        </style>
+    </head>
+
+    <body>
+        <a class="skiplink" href="#map">Go to map</a>
+        <div id="map" class="map" tabindex="0"></div>
+        <h2 id='totalCountries'></h2>
+        <script>
+
+            // florence marker
+            var stroke = new ol.style.Stroke( { color: 'black', width: 2 } );
+            var fill = new ol.style.Fill( { color: 'red' } );
+            var pt_style = new ol.style.Style( {
+                image: new ol.style.RegularShape( {
+                    fill: fill,
+                    stroke: stroke,
+                    points: 5,
+                    radius: 10,
+                    radius2: 4,
+                    angle: 0
+                } )
+            } );
+            var florence = new ol.Feature( {
+                geometry: new ol.geom.Point( [ 11.246530, 43.777776 ] )
+            } );
+            var florence_source = new ol.source.Vector( {
+                features: [ florence ]
+            } );
+
+            var florence_vectorLayer = new ol.layer.Vector( {
+                source: florence_source,
+                style: pt_style
+            } );
+
+            // highlighted countries 
+            var countries_vectorLayer = new ol.layer.Vector( {
+
+            } );
+
+            // clicked location 
+            var clickedLocation_vectorLayer = new ol.layer.Vector( {
+                style: pt_style
+            } );
+
+            var map = new ol.Map( {
+                layers: [
+                    new ol.layer.Tile( {
+                        source: new ol.source.OSM()
+                    } ),
+                    florence_vectorLayer,
+                    countries_vectorLayer,
+                    clickedLocation_vectorLayer
+                ],
+                target: 'map',
+                controls: ol.control.defaults( {
+                    attributionOptions: /** @type {olx.control.AttributionOptions} */ ( {
+                        collapsible: false
+                    } )
+                } ),
+                view: new ol.View( {
+                    projection: 'EPSG:4326',
+                    center: [ 11.246530, 43.777776 ],
+                    zoom: 12
+                } )
+            } );
+
+            map.on( 'singleclick', function ( evt )
+            {
+                fetch( `far/${ evt.coordinate[ 0 ] }/${ evt.coordinate[ 1 ] }/` ).then( res => res.json() )
+                    .then( data =>
+                    {
+                        console.log( data );
+                        var vectorSource = new ol.source.Vector( {
+                            features: ( new ol.format.GeoJSON() ).readFeatures( data )
+                        } );
+
+                        countries_vectorLayer.setSource( vectorSource );
+                        var clicked_pt_feature = new ol.Feature( {
+                            geometry: new ol.geom.Point( evt.coordinate )
+                        } );
+                        var clicked_pt = new ol.source.Vector( {
+                            features: [ clicked_pt_feature ]
+                        } );
+                        clickedLocation_vectorLayer.setSource( clicked_pt );
+                        document.getElementById( 'totalCountries' ).innerHTML = `You are ${ data.features.length } countries far`;
+                    } );
+            } )
+
+        </script>
+    </body>
+
+</html>
