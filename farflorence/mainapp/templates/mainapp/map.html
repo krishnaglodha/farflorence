@@ -1,40 +1,38 @@
-<!DOCTYPE html>
-<html>
+{% extends 'base.html' %}
+{% block title %}Map Page{% endblock title %}
+{% block head %}
+<link rel="stylesheet" href="https://openlayers.org/en/v3.20.1/css/ol.css" type="text/css">
+<!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+<script
+    src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+<script src="https://openlayers.org/en/v3.20.1/build/ol.js"></script>
+<style>
+    a.skiplink {
+        position: absolute;
+        clip: rect(1px, 1px, 1px, 1px);
+        padding: 0;
+        border: 0;
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+    }
 
-    <head>
-        <title>Accessible Map</title>
-        <link rel="stylesheet" href="https://openlayers.org/en/v3.20.1/css/ol.css" type="text/css">
-        <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
-        <script
-            src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
-        <script src="https://openlayers.org/en/v3.20.1/build/ol.js"></script>
-        <style>
-            a.skiplink {
-                position: absolute;
-                clip: rect(1px, 1px, 1px, 1px);
-                padding: 0;
-                border: 0;
-                height: 1px;
-                width: 1px;
-                overflow: hidden;
-            }
+    a.skiplink:focus {
+        clip: auto;
+        height: auto;
+        width: auto;
+        background-color: #fff;
+        padding: 0.3em;
+    }
 
-            a.skiplink:focus {
-                clip: auto;
-                height: auto;
-                width: auto;
-                background-color: #fff;
-                padding: 0.3em;
-            }
+    #map:focus {
+        outline: #4A74A8 solid 0.15em;
+    }
+</style>
+{% endblock head %}
 
-            #map:focus {
-                outline: #4A74A8 solid 0.15em;
-            }
-        </style>
-    </head>
-
-    <body>
-        <a class="skiplink" href="#map">Go to map</a>
+{% block body %}
+<a class="skiplink" href="#map">Go to map</a>
         <div id="map" class="map" tabindex="0"></div>
         <h2 id='totalCountries'></h2>
         <script>
@@ -118,7 +116,4 @@
                     } );
             } )
 
-        </script>
-    </body>
-
-</html>
+{% endblock body %}
