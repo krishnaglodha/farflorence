@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-w#b3t=v5tda_!a++5(r8etrh+z#m=_m_f*wa^8!+7fjlky!!v!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+import os
 
 # Application definition
 
@@ -89,7 +89,7 @@ WSGI_APPLICATION = 'farflorence.wsgi.application'
 DATABASES = {
 	'default': {
 		 'ENGINE': 'django.contrib.gis.db.backends.postgis',
-		 'NAME': 'farflorence',
+		 'NAME': 'sample',
 		 'USER': 'postgres',
 		'PASSWORD':'postgres',
 		'HOST':'localhost',
@@ -97,7 +97,8 @@ DATABASES = {
 	},
 }
 
-
+GDAL_LIBRARY_PATH = os.getenv('GDAL_LIBRARY_PATH')
+GEOS_LIBRARY_PATH = os.getenv('GEOS_LIBRARY_PATH')
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
