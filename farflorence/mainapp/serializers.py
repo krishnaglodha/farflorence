@@ -10,6 +10,10 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
 
 
 
+class CountryNormalSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = countries
+        fields = "__all__"
 
 
 
